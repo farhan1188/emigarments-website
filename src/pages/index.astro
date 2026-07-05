@@ -7,7 +7,16 @@ import DivisionsPreview from "../components/DivisionsPreview.astro";
 import ProcessSteps from "../components/ProcessSteps.astro";
 import ComplianceStrip from "../components/ComplianceStrip.astro";
 import CtaBand from "../components/CtaBand.astro";
-import { site, images } from "../data/site";
+import { site, images, divisions } from "../data/site";
+
+const leather = divisions[0];
+const heroSlides = [
+  leather.hero,          // finished leather jacket — leads
+  images.hero,           // modern mill floor
+  leather.gallery[0],    // hand-stitched leather panel
+  images.looms,          // industrial looms
+  leather.gallery[2],    // tanned hide grain
+];
 ---
 <Base>
   <Hero
@@ -15,7 +24,7 @@ import { site, images } from "../data/site";
     kicker={site.tagline}
     title={site.hero.headline}
     sub={site.hero.sub}
-    image={images.hero}
+    slides={heroSlides}
     primary={{ label: "Request a Quote", href: "/contact" }}
     secondary={{ label: "Explore divisions", href: "/divisions" }}
   />

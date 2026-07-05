@@ -8,23 +8,30 @@ interface Props {
   kicker?: string;
   title: string;
   sub?: string;
-  image: Img;
+  image?: Img;
+  slides?: Img[];
   primary?: { label: string; href: string };
   secondary?: { label: string; href: string };
 }
-const { variant = "page", kicker, title, sub, image, primary, secondary } = Astro.props;
+const { variant = "page", kicker, title, sub, image, slides, primary, secondary } = Astro.props;
 const isHome = variant === "home";
+const gallery = slides && slides.length > 0 ? slides : image ? [image] : [];
+const isSlider = gallery.length > 1;
 ---
 <section class:list={["hero", `hero--${variant}`]} data-theme="dark">
-  <div class="hero__media">
-    <Picture
-      img={image.img}
-      alt={image.alt}
-      ratio={isHome ? "16 / 10" : "16 / 7"}
-      sizes="100vw"
-      eager={true}
-      fetchpriority="high"
-    />
+  <div class="hero__media" data-hero-slider={isSlider ? "" : undefined} aria-hidden={isSlider ? "true" : undefined}>
+    {gallery.map((img, i) => (
+      <div class:list={["hero__slide", i === 0 && "is-active"]}>
+        <Picture
+          img={img.img}
+          alt={img.alt}
+          ratio={isHome ? "16 / 10" : "16 / 7"}
+          sizes="100vw"
+          eager={true}
+          fetchpriority={i === 0 ? "high" : undefined}
+        />
+      </div>
+    ))}
     <div class="hero__scrim"></div>
   </div>
 
@@ -41,6 +48,19 @@ const isHome = variant === "home";
       )}
     </div>
   </div>
+
+  {isSlider && (
+    <div class="hero__dots" role="group" aria-label="Hero image selector">
+      {gallery.map((_, i) => (
+        <button
+          type="button"
+          class="hero__dot"
+          aria-label={`Show image ${i + 1} of ${gallery.length}`}
+          aria-current={i === 0 ? "true" : "false"}
+        ></button>
+      ))}
+    </div>
+  )}
 </section>
 
 <style>
@@ -50,12 +70,39 @@ const isHome = variant === "home";
 
   .hero__media { position: absolute; inset: 0; z-index: -1; }
   .hero__media :global(.figure) { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
+  .hero__slide {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity var(--dur-4) var(--ease-out);
+  }
+  .hero__slide.is-active { opacity: 1; }
   .hero__scrim {
     position: absolute; inset: 0;
     background:
       linear-gradient(180deg, rgba(15, 23, 45, 0.55) 0%, rgba(15, 23, 45, 0.2) 32%, rgba(11, 17, 35, 0.82) 100%),
       linear-gradient(90deg, rgba(11, 17, 35, 0.78) 0%, rgba(11, 17, 35, 0.25) 52%, rgba(11, 17, 35, 0) 78%);
   }
+
+  .hero__dots {
+    position: absolute;
+    right: var(--space-xl);
+    bottom: var(--space-xl);
+    display: flex;
+    gap: 0.6rem;
+  }
+  .hero__dot {
+    position: relative;
+    width: 0.5rem; height: 0.5rem;
+    border-radius: 50%;
+    border: 0; padding: 0;
+    background: oklch(1 0 0 / 0.35);
+    cursor: pointer;
+    transition: background var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+  }
+  .hero__dot::before { content: ""; position: absolute; inset: -10px; }
+  .hero__dot:hover { background: oklch(1 0 0 / 0.6); }
+  .hero__dot:focus-visible { outline: 2px solid var(--camel-300); outline-offset: 3px; }
+  .hero__dot[aria-current="true"] { background: var(--camel-300); transform: scale(1.3); }
 
   .hero__inner { width: 100%; padding-block: clamp(6rem, 5rem + 8vw, 9rem) clamp(3rem, 2rem + 5vw, 5.5rem); }
   .hero__content { max-width: 46rem; }
@@ -74,4 +121,59 @@ const isHome = variant === "home";
     flex-wrap: wrap;
     gap: var(--space-md);
   }
+
+  @media (max-width: 34rem) {
+    .hero__dots { right: var(--space-lg); bottom: var(--space-lg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__slide { transition: none; }
+  }
 </style>
+
+<script>
+  const hero = document.querySelector<HTMLElement>("[data-hero-slider]");
+  if (hero) {
+    const slides = Array.from(hero.querySelectorAll<HTMLElement>(".hero__slide"));
+    const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>(".hero__dot"));
+
+    if (slides.length > 1) {
+      let index = 0;
+      let timer: ReturnType<typeof setInterval> | undefined;
+
+      const show = (next: number) => {
+        slides[index].classList.remove("is-active");
+        dots[index]?.setAttribute("aria-current", "false");
+        index = next;
+        slides[index].classList.add("is-active");
+        dots[index]?.setAttribute("aria-current", "true");
+      };
+
+      const advance = () => show((index + 1) % slides.length);
+
+      const stop = () => {
+        if (timer !== undefined) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+      };
+      const start = () => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        stop();
+        timer = setInterval(advance, 6000);
+      };
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+          show(i);
+          start();
+        });
+      });
+      hero.addEventListener("mouseenter", stop);
+      hero.addEventListener("mouseleave", start);
+      hero.addEventListener("focusin", stop);
+      hero.addEventListener("focusout", start);
+
+      start();
+    }
+  }
+</script>

@@ -103,6 +103,7 @@
   --dur-1: 200ms;
   --dur-2: 350ms;
   --dur-3: 600ms;
+  --dur-4: 800ms;
 
   /* ---- Z-index scale ---- */
   --z-base: 1;
