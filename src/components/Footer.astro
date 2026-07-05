@@ -1,0 +1,107 @@
+---
+import Logo from "./Logo.astro";
+import Cross from "./Cross.astro";
+import { nav, divisions, contact, site } from "../data/site";
+const year = new Date().getFullYear();
+---
+<footer class="site-footer" data-theme="deep">
+  <div class="container container--wide">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <a href="/" aria-label="EMIGARMENTS — home" class="site-footer__logo">
+          <Logo variant="reversed" />
+        </a>
+        <p class="site-footer__line">
+          {site.tagline}. Manufacturing leather, denim, home textiles, and terry
+          from {site.city}, {site.country}.
+        </p>
+        <Cross size={18} />
+      </div>
+
+      <nav class="site-footer__cols" aria-label="Footer">
+        <div class="site-footer__col">
+          <h2 class="site-footer__heading">Explore</h2>
+          <ul role="list">
+            {nav.map((i) => <li><a href={i.href} class="site-footer__navlink">{i.label}</a></li>)}
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2 class="site-footer__heading">Divisions</h2>
+          <ul role="list">
+            {divisions.map((d) => (
+              <li><a href={`/divisions#${d.slug}`} class="site-footer__navlink">{d.name}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div class="site-footer__col">
+          <h2 class="site-footer__heading">Contact</h2>
+          <address class="site-footer__address">
+            {contact.addressLines.map((l) => <span>{l}</span>)}
+            <a href={`mailto:${contact.email}`} class="site-footer__navlink">{contact.email}</a>
+            {contact.phone && <a href={contact.phoneHref} class="site-footer__navlink">{contact.phone}</a>}
+            <span class="site-footer__hours">{contact.hours}</span>
+          </address>
+        </div>
+      </nav>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} {site.name}. All rights reserved.</p>
+      <p class="site-footer__legal">{site.city}, {site.country}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-block: var(--space-4xl) var(--space-2xl); }
+  .site-footer__top {
+    display: grid;
+    grid-template-columns: 1.3fr 2fr;
+    gap: var(--space-3xl) var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--on-dark-line);
+  }
+  .site-footer__logo { display: block; height: 4.5rem; width: max-content; margin-bottom: var(--space-lg); }
+  .site-footer__logo .logo { height: 100%; }
+  .site-footer__line { color: var(--on-dark-muted); max-width: 32ch; margin-bottom: var(--space-lg); }
+
+  .site-footer__cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+  }
+  .site-footer__heading {
+    font-size: var(--step-xs);
+    font-weight: var(--wght-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+    color: var(--camel-300);
+    margin-bottom: var(--space-md);
+  }
+  .site-footer__cols ul { display: flex; flex-direction: column; gap: 0.55rem; }
+  .site-footer__navlink {
+    color: var(--on-dark-muted);
+    transition: color var(--dur-1) var(--ease-out);
+  }
+  .site-footer__navlink:hover { color: var(--camel-300); }
+  .site-footer__address { font-style: normal; display: flex; flex-direction: column; gap: 0.55rem; color: var(--on-dark-muted); }
+  .site-footer__hours { color: var(--on-dark-muted); opacity: 0.8; font-size: var(--step-small); }
+
+  .site-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding-top: var(--space-xl);
+    color: var(--on-dark-muted);
+    font-size: var(--step-small);
+  }
+  .site-footer__legal { opacity: 0.7; max-width: 60ch; }
+
+  @media (max-width: 56rem) {
+    .site-footer__top { grid-template-columns: 1fr; gap: var(--space-2xl); }
+  }
+  @media (max-width: 34rem) {
+    .site-footer__cols { grid-template-columns: 1fr 1fr; }
+  }
+</style>

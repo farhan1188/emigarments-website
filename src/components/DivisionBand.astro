@@ -1,0 +1,106 @@
+---
+import Picture from "./Picture.astro";
+import Button from "./Button.astro";
+import Cross from "./Cross.astro";
+import type { Division } from "../data/site";
+interface Props { division: Division; index: number; }
+const { division: d, index } = Astro.props;
+const flip = index % 2 === 1;
+---
+<section class="band section" id={d.slug} data-theme={flip ? "alt" : undefined} aria-labelledby={`${d.slug}-title`}>
+  <div class="container container--wide">
+    <div class:list={["band__grid", flip && "band__grid--flip"]}>
+      <div class="band__media reveal" style={`--thumb-count:${d.gallery.length}`}>
+        <Picture img={d.hero.img} alt={d.hero.alt} sizes="(max-width: 60rem) 100vw, 30vw" class="band__main" />
+        <div class="band__thumbs">
+          {d.gallery.map((g) => (
+            <Picture img={g.img} alt={g.alt} sizes="(max-width: 60rem) 45vw, 16vw" />
+          ))}
+        </div>
+      </div>
+
+      <div class="band__content reveal">
+        <p class="band__tag">{d.tagline}</p>
+        <h2 class="h2" id={`${d.slug}-title`}>{d.name}</h2>
+        <p class="band__blurb">{d.blurb}</p>
+
+        <div class="band__stages">
+          <span class="band__stages-label">In-house stages</span>
+          <ul role="list">
+            {d.stages.map((s) => (
+              <li><Cross size={9} />{s}</li>
+            ))}
+          </ul>
+        </div>
+
+        <Button href={`/contact?division=${d.slug}`} arrow>Request a {d.name} quote</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .band { scroll-margin-top: 7rem; }
+  .band__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: clamp(2rem, 1rem + 5vw, 5rem);
+    align-items: center;
+  }
+  .band__grid--flip .band__media { order: 2; }
+
+  /* Bento media: large image + two stacked thumbs, fixed block height */
+  .band__media {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    grid-template-rows: repeat(var(--thumb-count, 2), 1fr);
+    gap: clamp(0.6rem, 0.3rem + 0.8vw, 1rem);
+    aspect-ratio: 7 / 6;
+  }
+  .band__media :global(.figure) {
+    aspect-ratio: auto;
+    height: 100%;
+    border-radius: var(--r-md);
+  }
+  .band__media :global(.band__main) {
+    grid-column: 1;
+    grid-row: 1 / span var(--thumb-count, 2);
+    box-shadow: var(--shadow-md);
+  }
+  .band__thumbs { display: contents; }
+  .band__thumbs :global(.figure) { grid-column: 2; }
+
+  .band__tag {
+    font-weight: var(--wght-medium);
+    font-size: 1rem;
+    color: var(--accent-strong);
+    margin-bottom: var(--space-sm);
+  }
+  .band__content .h2 { margin-bottom: var(--space-md); }
+  .band__blurb { color: var(--text-muted); max-width: 48ch; margin-bottom: var(--space-xl); }
+
+  .band__stages { margin-bottom: var(--space-xl); }
+  .band__stages-label {
+    display: block;
+    font-size: var(--step-xs);
+    font-weight: var(--wght-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+  }
+  .band__stages ul { display: flex; flex-wrap: wrap; gap: 0.5rem 1.1rem; }
+  .band__stages li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: var(--wght-medium);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 60rem) {
+    .band__grid { grid-template-columns: 1fr; gap: var(--space-xl); }
+    .band__grid--flip .band__media { order: 0; }
+    .band__media { aspect-ratio: 16 / 11; max-width: 38rem; }
+  }
+</style>

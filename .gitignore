@@ -1,0 +1,30 @@
+# build output
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# vercel
+.vercel/
+
+# env
+.env
+.env.production
+.env.local
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# local QA artifacts
+.playwright-mcp/
+*.jpeg
+*.png
+
+# impeccable design-hook session cache (local, machine-specific paths)
+.impeccable/
+
+.vercel
+.env*

@@ -1,0 +1,55 @@
+---
+// EMI GARMENTS — stacked wordmark recreated as inline SVG to match the supplied
+// mark: "EMI" over "GARMENTS" in a high-contrast serif (Bodoni Moda), with a
+// camel rule broken by the ✕ cross beneath.
+// `compact` drops the rule and tightens vertically (for the horizontal header).
+// Colors come from --logo-ink / --logo-accent so an ancestor can recolor it.
+interface Props {
+  variant?: "default" | "reversed";
+  compact?: boolean;
+  class?: string;
+}
+const { variant = "default", compact = false, class: className } = Astro.props;
+const viewBox = compact ? "0 22 600 140" : "0 22 600 192";
+---
+<svg
+  class:list={["logo", variant === "reversed" && "logo--reversed", className]}
+  viewBox={viewBox}
+  role="img"
+  aria-label="EMI GARMENTS"
+>
+  <title>EMI GARMENTS</title>
+  <text x="300" y="74" text-anchor="middle" class="logo__l1">EMI</text>
+  <text x="300" y="152" text-anchor="middle" class="logo__l2">GARMENTS</text>
+  {!compact && (
+    <g class="logo__mark" stroke-linecap="round">
+      <line x1="182" y1="192" x2="283" y2="192" />
+      <line x1="317" y1="192" x2="418" y2="192" />
+      <line x1="291" y1="183" x2="309" y2="201" />
+      <line x1="309" y1="183" x2="291" y2="201" />
+    </g>
+  )}
+</svg>
+
+<style>
+  .logo { width: auto; height: 100%; display: block; }
+  .logo__l1,
+  .logo__l2 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    fill: var(--logo-ink, var(--indigo-800));
+    transition: fill var(--dur-1) var(--ease-out);
+  }
+  .logo__l1 { font-size: 60px; letter-spacing: 24px; }
+  .logo__l2 { font-size: 60px; letter-spacing: 13px; }
+  .logo__mark line {
+    stroke: var(--logo-accent, var(--camel-500));
+    stroke-width: 1.6;
+    fill: none;
+    transition: stroke var(--dur-1) var(--ease-out);
+  }
+  .logo--reversed {
+    --logo-ink: var(--on-dark);
+    --logo-accent: var(--camel-300);
+  }
+</style>

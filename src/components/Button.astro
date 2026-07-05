@@ -1,0 +1,38 @@
+---
+interface Props {
+  href?: string;
+  variant?: "primary" | "ghost";
+  onDark?: boolean;
+  type?: "button" | "submit" | "reset";
+  arrow?: boolean;
+  download?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+const {
+  href,
+  variant = "primary",
+  onDark = false,
+  type = "button",
+  arrow = false,
+  download = false,
+  class: className,
+  ...rest
+} = Astro.props;
+const Tag = href ? "a" : "button";
+const classes = ["btn", `btn--${variant}`, onDark && "btn--on-dark", className];
+---
+<Tag
+  class:list={classes}
+  href={href}
+  type={href ? undefined : type}
+  download={href && download ? "" : undefined}
+  {...rest}
+>
+  <slot />
+  {arrow && (
+    <svg class="btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  )}
+</Tag>

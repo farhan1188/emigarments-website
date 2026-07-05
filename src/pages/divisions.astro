@@ -1,0 +1,38 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import DivisionBand from "../components/DivisionBand.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { divisions, images } from "../data/site";
+---
+<Base
+  title="Divisions"
+  description="Leather, denim, home textiles, and terry, manufactured end to end under one roof in Karachi, Pakistan."
+>
+  <Hero
+    variant="page"
+    title="Four divisions, one factory standard."
+    sub="Vertically integrated production means we control quality from raw material to finished, inspected goods, across leather, denim, home textiles, and terry."
+    image={images.hall}
+    primary={{ label: "Request a Quote", href: "/contact" }}
+  />
+
+  <section class="dintro section--tight">
+    <div class="container container--text reveal">
+      <p class="lead">
+        Each division runs its own specialist floor, yet answers to the same controls:
+        material selection, accurate manufacturing, and inspection before anything ships.
+        Below, what each one makes and the stages we keep in-house.
+      </p>
+    </div>
+  </section>
+
+  {divisions.map((d, i) => <DivisionBand division={d} index={i} />)}
+
+  <CtaBand />
+</Base>
+
+<style>
+  .dintro { padding-top: clamp(2.5rem, 1.5rem + 4vw, 4.5rem); padding-bottom: 0; }
+  .dintro .lead { color: var(--text-muted); }
+</style>

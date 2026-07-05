@@ -1,0 +1,193 @@
+---
+import { forms, divisionOptions, contact } from "../data/site";
+const key = forms.web3formsKey;
+---
+<form
+  class="form"
+  id="inquiry-form"
+  method="POST"
+  action="https://api.web3forms.com/submit"
+  data-key={key}
+  novalidate
+>
+  <input type="hidden" name="access_key" value={key} />
+  <input type="hidden" name="subject" value="New inquiry — EMIGARMENTS website" />
+  <input type="hidden" name="from_name" value="EMIGARMENTS Website" />
+  <label class="hp" aria-hidden="true">
+    Leave this empty
+    <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" />
+  </label>
+
+  <div class="form__row">
+    <div class="field">
+      <label for="f-name">Name <span class="req">*</span></label>
+      <input id="f-name" name="name" type="text" required autocomplete="name" />
+    </div>
+    <div class="field">
+      <label for="f-company">Company <span class="req">*</span></label>
+      <input id="f-company" name="company" type="text" required autocomplete="organization" />
+    </div>
+  </div>
+
+  <div class="form__row">
+    <div class="field">
+      <label for="f-email">Work email <span class="req">*</span></label>
+      <input id="f-email" name="email" type="email" required autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="f-country">Country</label>
+      <input id="f-country" name="country" type="text" autocomplete="country-name" />
+    </div>
+  </div>
+
+  <div class="form__row">
+    <div class="field">
+      <label for="f-division">Division of interest</label>
+      <div class="select">
+        <select id="f-division" name="division">
+          <option value="">Select…</option>
+          {divisionOptions.map((o) => <option value={o.value}>{o.label}</option>)}
+          <option value="multiple">Multiple / Other</option>
+        </select>
+        <svg class="select__chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </div>
+    <div class="field">
+      <label for="f-quantity">Estimated quantity</label>
+      <input id="f-quantity" name="quantity" type="text" placeholder="e.g. 5,000 pcs / month" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="f-details">Project details <span class="req">*</span></label>
+    <textarea id="f-details" name="message" rows="5" required placeholder="Product, specs, target timeline, and any certifications you require…"></textarea>
+  </div>
+
+  <div class="form__foot">
+    <button type="submit" class="btn btn--primary form__submit">
+      <span class="form__submit-label">Send inquiry</span>
+      <svg class="btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="form__alt">Prefer email? <a href={`mailto:${contact.email}`} class="link">{contact.email}</a></p>
+  </div>
+
+  <p class="form__status" role="status" aria-live="polite" hidden></p>
+</form>
+
+<script>
+  const form = document.getElementById("inquiry-form") as HTMLFormElement | null;
+  if (form) {
+    const status = form.querySelector<HTMLElement>(".form__status")!;
+    const submit = form.querySelector<HTMLButtonElement>(".form__submit")!;
+    const label = form.querySelector<HTMLElement>(".form__submit-label")!;
+    const key = form.dataset.key || "";
+    const connected = key && !key.startsWith("REPLACE_WITH");
+
+    // Pre-select division from ?division= deep links
+    const params = new URLSearchParams(location.search);
+    const div = params.get("division");
+    if (div) {
+      const sel = form.querySelector<HTMLSelectElement>("#f-division");
+      if (sel && [...sel.options].some((o) => o.value === div)) sel.value = div;
+    }
+
+    const show = (msg: string, ok: boolean) => {
+      status.hidden = false;
+      status.textContent = msg;
+      status.classList.toggle("is-ok", ok);
+      status.classList.toggle("is-err", !ok);
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      if (!connected) {
+        show(`Our inquiry form isn't connected to email yet. Please email us at ${form.querySelector("a")?.textContent ?? "info@emigarments.com"} and we read every message.`, false);
+        return;
+      }
+      submit.disabled = true;
+      label.textContent = "Sending…";
+      try {
+        const data = Object.fromEntries(new FormData(form).entries());
+        const res = await fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (json.success) {
+          form.reset();
+          show("Thank you. Your inquiry has reached us, and we'll reply within one business day.", true);
+        } else {
+          show(json.message || "Something went wrong. Please email us directly and we'll pick it up.", false);
+        }
+      } catch {
+        show("Network error. Please email us directly and we'll pick it up.", false);
+      } finally {
+        submit.disabled = false;
+        label.textContent = "Send inquiry";
+      }
+    });
+  }
+</script>
+
+<style>
+  .form { display: flex; flex-direction: column; gap: var(--space-lg); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
+
+  .field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .field label { font-size: var(--step-small); font-weight: var(--wght-medium); color: var(--text); }
+  .req { color: var(--accent-strong); }
+
+  .field input,
+  .field textarea,
+  .field select {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    font-size: 1rem;
+    color: var(--text);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    transition: border-color var(--dur-1) var(--ease-out), box-shadow var(--dur-1) var(--ease-out);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .field textarea { resize: vertical; min-height: 7rem; line-height: 1.55; }
+  .field input::placeholder, .field textarea::placeholder { color: oklch(0.6 0.015 262); }
+  .field input:focus,
+  .field textarea:focus,
+  .field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+
+  .select { position: relative; }
+  .select select { padding-right: 2.5rem; cursor: pointer; }
+  .select__chevron {
+    position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%);
+    width: 1.1rem; height: 1.1rem; color: var(--text-muted); pointer-events: none;
+  }
+
+  .form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md) var(--space-lg); margin-top: var(--space-xs); }
+  .form__submit:disabled { opacity: 0.7; cursor: progress; }
+  .form__alt { font-size: var(--step-small); color: var(--text-muted); }
+
+  .form__status {
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--r-sm);
+    font-size: 0.95rem;
+    border: 1px solid transparent;
+  }
+  .form__status.is-ok { background: color-mix(in oklab, var(--success) 12%, var(--paper)); border-color: color-mix(in oklab, var(--success) 40%, transparent); color: color-mix(in oklab, var(--success) 75%, var(--ink)); }
+  .form__status.is-err { background: color-mix(in oklab, var(--error) 10%, var(--paper)); border-color: color-mix(in oklab, var(--error) 40%, transparent); color: color-mix(in oklab, var(--error) 78%, var(--ink)); }
+
+  @media (max-width: 40rem) {
+    .form__row { grid-template-columns: 1fr; gap: var(--space-lg); }
+  }
+</style>

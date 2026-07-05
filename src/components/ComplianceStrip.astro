@@ -1,0 +1,67 @@
+---
+import Seal from "./Seal.astro";
+import { compliance } from "../data/site";
+---
+<section class="compliance section" data-theme="deep">
+  <div class="container container--wide">
+    <div class="compliance__head reveal">
+      <h2 class="h2">Built to pass your audit.</h2>
+      <p class="compliance__note">{compliance.note}</p>
+    </div>
+
+    <ul class="compliance__grid" role="list">
+      {compliance.standards.map((c) => (
+        <li class="cert reveal">
+          <Seal />
+          <div class="cert__body">
+            <span class="cert__name">{c.name}</span>
+            <span class="cert__detail">{c.note}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .compliance__head {
+    max-width: 52rem;
+    margin-bottom: clamp(2.25rem, 1.5rem + 2.5vw, 3.5rem);
+  }
+  .compliance__note { color: var(--on-dark-muted); margin-top: var(--space-md); font-size: 1.05rem; }
+
+  .compliance__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(0.75rem, 0.4rem + 1vw, 1.1rem);
+  }
+  @media (max-width: 60rem) { .compliance__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 36rem) { .compliance__grid { grid-template-columns: 1fr; } }
+  .cert {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    border: 1px solid var(--on-dark-line);
+    border-radius: var(--r-md);
+    background: var(--on-dark-faint);
+    transition: border-color var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+  }
+  .cert:hover { border-color: color-mix(in oklab, var(--camel-300) 55%, transparent); transform: translateY(-2px); }
+  .cert__body { display: flex; flex-direction: column; gap: 0.15rem; }
+  .cert__name { font-weight: var(--wght-bold); color: var(--on-dark); line-height: 1.2; }
+  .cert__detail { font-size: var(--step-small); color: var(--on-dark-muted); }
+
+  .compliance__flag {
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--on-dark-line);
+    font-size: var(--step-small);
+    color: var(--camel-300);
+    max-width: 78ch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cert { transition: none; }
+  }
+</style>

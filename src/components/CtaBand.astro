@@ -1,0 +1,37 @@
+---
+import Button from "./Button.astro";
+import Cross from "./Cross.astro";
+import { contact } from "../data/site";
+interface Props {
+  heading?: string;
+  sub?: string;
+  division?: string;
+}
+const {
+  heading = "Let's build your next order.",
+  sub = "Send specs, target quantities, and timelines. We'll come back with a quote and a clear path to your first sample.",
+  division,
+} = Astro.props;
+const quoteHref = division ? `/contact?division=${division}` : "/contact";
+---
+<section class="cta section" data-theme="dark">
+  <div class="container">
+    <div class="cta__inner reveal">
+      <Cross size={22} class="cta__ornament" />
+      <h2 class="h2 cta__heading">{heading}</h2>
+      <p class="lead cta__sub">{sub}</p>
+      <div class="cta__actions">
+        <Button href={quoteHref} variant="primary" arrow>Request a Quote</Button>
+        <Button href={`mailto:${contact.email}`} variant="ghost" onDark>Email us directly</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta { text-align: center; }
+  .cta__inner { max-width: 44rem; margin-inline: auto; display: flex; flex-direction: column; align-items: center; }
+  .cta__ornament { margin-bottom: var(--space-lg); }
+  .cta__sub { margin-top: var(--space-md); color: var(--on-dark-muted); }
+  .cta__actions { margin-top: var(--space-xl); display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: center; }
+</style>

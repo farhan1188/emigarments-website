@@ -1,0 +1,77 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import Picture from "../components/Picture.astro";
+import ValueBlocks from "../components/ValueBlocks.astro";
+import ProcessSteps from "../components/ProcessSteps.astro";
+import ComplianceStrip from "../components/ComplianceStrip.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { site, images } from "../data/site";
+---
+<Base
+  title="About"
+  description="EMIGARMENTS is a Karachi-based progressive industrial group, founded in 2021, with modern facilities, audited quality, and precision manufacturing across four divisions."
+>
+  <Hero
+    variant="page"
+    title="A Progressive Industrial Group."
+    sub={`Founded in ${site.founded} in ${site.city}, ${site.country}. Built for the way modern sourcing works.`}
+    image={images.looms}
+  />
+
+  <section class="story section">
+    <div class="container container--wide">
+      <div class="story__grid">
+        <div class="story__text reveal">
+          <h2 class="h2">Modern by design, not by accident.</h2>
+          <div class="prose stack" style="--flow: 1.1rem">
+            <p>
+              EMIGARMENTS was founded in {site.founded} in {site.city}, on a simple conviction:
+              a manufacturer should be judged on <strong>precision and proof</strong>, not on how
+              long it has been around.
+            </p>
+            <p>
+              We built for the way sourcing works now: modern automation, responsible
+              practices, and tight quality control across leather, denim, home textiles, and
+              terry. Being a newer group is the point: current machinery, current standards,
+              and systems designed around the consistency and compliance international buyers
+              expect today.
+            </p>
+            <p>
+              From a first sample to a full production run, the goal never changes: reliable
+              output a partner can put their name behind.
+            </p>
+          </div>
+        </div>
+        <div class="story__media reveal">
+          <Picture img={images.qc.img} alt={images.qc.alt} ratio="4 / 5" sizes="(max-width: 60rem) 100vw, 42vw" class="story__img" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ValueBlocks
+    heading="Our approach"
+    lead="Two commitments shape every order we take: engineered solutions, and production held to a premium standard."
+  />
+
+  <ProcessSteps />
+  <ComplianceStrip />
+  <CtaBand heading="Work with a modern maker." sub="Tell us what you need built. We'll show you how EMIGARMENTS delivers it." />
+</Base>
+
+<style>
+  .story__grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(2rem, 1rem + 5vw, 5rem);
+    align-items: center;
+  }
+  .story__text .h2 { margin-bottom: var(--space-lg); }
+  .story__img { border-radius: var(--r-md); box-shadow: var(--shadow-md); }
+
+  @media (max-width: 60rem) {
+    .story__grid { grid-template-columns: 1fr; }
+    .story__media { max-width: 30rem; }
+  }
+</style>

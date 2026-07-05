@@ -1,0 +1,67 @@
+---
+import { processSteps } from "../data/site";
+interface Props { theme?: "paper" | "alt"; }
+const { theme = "paper" } = Astro.props;
+---
+<section class="process section" data-theme={theme === "alt" ? "alt" : undefined}>
+  <div class="container container--wide">
+    <header class="process__head reveal">
+      <h2 class="h2">How we engineer with precision.</h2>
+      <p class="lead process__lead">
+        Every order runs the same disciplined path, from technical design to the final
+        inspection before it ships.
+      </p>
+    </header>
+
+    <ol class="process__steps" role="list">
+      {processSteps.map((s) => (
+        <li class="step reveal">
+          <div class="step__top">
+            <span class="step__n">{s.n}</span>
+            <span class="step__rule"></span>
+          </div>
+          <h3 class="step__title">{s.title}</h3>
+          <p class="step__body">{s.body}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process__head { max-width: 50rem; margin-bottom: clamp(2.5rem, 1.5rem + 3vw, 4rem); }
+  .process__head .h2 { margin-top: var(--space-md); }
+  .process__lead { margin-top: var(--space-md); }
+
+  .process__steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+  }
+  .step__top { display: flex; align-items: center; gap: var(--space-sm); margin-bottom: var(--space-md); }
+  .step__n {
+    font-family: var(--font-display);
+    font-weight: var(--wght-display);
+    font-size: clamp(2.2rem, 1.6rem + 2vw, 3.1rem);
+    line-height: 1;
+    color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+  }
+  .step__rule { flex: 1; height: 1px; background: var(--hairline); }
+  .step__title {
+    font-family: var(--font-sans);
+    font-weight: var(--wght-bold);
+    font-size: var(--step-h3);
+    letter-spacing: var(--track-tight);
+    margin-bottom: var(--space-xs);
+  }
+  .step__body { color: var(--text-muted); font-size: 0.98rem; }
+
+  @media (max-width: 60rem) {
+    .process__steps { grid-template-columns: 1fr 1fr; gap: var(--space-2xl) var(--space-xl); }
+  }
+  @media (max-width: 38rem) {
+    .process__steps { grid-template-columns: 1fr; gap: var(--space-xl); }
+    .step__top { gap: var(--space-md); }
+  }
+</style>

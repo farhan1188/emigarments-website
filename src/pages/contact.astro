@@ -1,0 +1,123 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import InquiryForm from "../components/InquiryForm.astro";
+import { contact, images } from "../data/site";
+const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(contact.mapQuery)}&z=12&output=embed`;
+---
+<Base
+  title="Contact"
+  description="Request a quote from EMIGARMENTS: leather, denim, home textiles, and terry manufacturing in Karachi, Pakistan."
+>
+  <Hero
+    variant="page"
+    title="Start an inquiry."
+    sub="Tell us what you need built. Share specs, target quantities, and timelines, and we'll come back with a quote and a clear path to your first sample."
+    image={images.cutter}
+  />
+
+  <section class="contact section">
+    <div class="container container--wide">
+      <div class="contact__grid">
+        <div class="contact__form-col reveal">
+          <h2 class="h2">Request a quote</h2>
+          <p class="contact__intro">Fields marked <span class="req">*</span> are required. We reply within one business day.</p>
+          <InquiryForm />
+        </div>
+
+        <aside class="contact__details reveal" aria-label="Direct contact details">
+          <h2 class="h3">Talk to us directly</h2>
+          <ul class="dl" role="list">
+            <li>
+              <span class="dl__label">Email</span>
+              <a class="link dl__value" href={`mailto:${contact.email}`}>{contact.email}</a>
+            </li>
+            {contact.phone && (
+              <li>
+                <span class="dl__label">Phone</span>
+                <a class="link dl__value" href={contact.phoneHref}>{contact.phone}</a>
+              </li>
+            )}
+            {contact.whatsapp && (
+              <li>
+                <span class="dl__label">WhatsApp</span>
+                <a class="link dl__value" href={contact.whatsappHref} rel="noopener" target="_blank">{contact.whatsapp}</a>
+              </li>
+            )}
+            <li>
+              <span class="dl__label">Location</span>
+              <span class="dl__value">{contact.addressLines.join(", ")}</span>
+            </li>
+            <li>
+              <span class="dl__label">Hours</span>
+              <span class="dl__value">{contact.hours}</span>
+            </li>
+          </ul>
+
+          <div class="contact__map">
+            <iframe
+              src={mapSrc}
+              title="EMIGARMENTS location, Karachi"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 1.25fr 0.9fr;
+    gap: clamp(2rem, 1rem + 5vw, 5rem);
+    align-items: start;
+  }
+  .contact__form-col .h2 { margin-bottom: var(--space-sm); }
+  .contact__intro { color: var(--text-muted); margin-bottom: var(--space-xl); }
+  .contact__intro .req { color: var(--accent-strong); }
+
+  .contact__details {
+    padding: var(--space-xl);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+  }
+  .contact__details .h3 { margin-bottom: var(--space-lg); }
+  .dl { display: flex; flex-direction: column; }
+  .dl li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-block: var(--space-md);
+    border-top: 1px solid var(--line);
+  }
+  .dl li:first-child { border-top: 0; padding-top: 0; }
+  .dl__label {
+    font-size: var(--step-xs);
+    font-weight: var(--wght-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--track-caps);
+    color: var(--text-muted);
+  }
+  .dl__value { font-weight: var(--wght-medium); }
+  .flag { color: var(--accent-strong); }
+
+  .contact__map {
+    margin-top: var(--space-lg);
+    aspect-ratio: 16 / 10;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--indigo-900);
+  }
+  .contact__map iframe { width: 100%; height: 100%; border: 0; display: block; filter: grayscale(0.2); }
+  .contact__flag { margin-top: var(--space-md); font-size: var(--step-small); color: var(--accent-strong); }
+
+  @media (max-width: 60rem) {
+    .contact__grid { grid-template-columns: 1fr; }
+    .contact__details { order: -1; }
+  }
+</style>

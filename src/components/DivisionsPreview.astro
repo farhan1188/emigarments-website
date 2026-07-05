@@ -1,0 +1,131 @@
+---
+import Picture from "./Picture.astro";
+import { divisions } from "../data/site";
+---
+<section class="dpreview section">
+  <div class="container container--wide">
+    <header class="dpreview__head reveal">
+      <div>
+        <h2 class="h2 dpreview__title">Four divisions, one standard.</h2>
+      </div>
+      <p class="dpreview__lead">
+        Leather, denim, home textiles, and terry. Each is run in-house and held to the
+        same precision and quality control, one partner across the whole floor.
+      </p>
+    </header>
+
+    <ul class="mosaic" role="list">
+      {divisions.map((d, i) => (
+        <li
+          class:list={["mosaic__item", i === 0 ? "mosaic__item--feature" : "mosaic__item--secondary", "reveal"]}
+          style={`--reveal-delay:${i * 70}ms`}
+        >
+          <a href={`/divisions#${d.slug}`} class="mosaic__link" aria-label={`${d.name}: ${d.tagline}`}>
+            <Picture
+              img={d.hero.img}
+              alt={d.hero.alt}
+              ratio={i === 0 ? "21 / 9" : "4 / 3"}
+              sizes={i === 0 ? "100vw" : "(max-width: 52rem) 100vw, 33vw"}
+              class="mosaic__img"
+            />
+            <span class="mosaic__veil"></span>
+            <span class="mosaic__body">
+              <span class="mosaic__name">{d.name}</span>
+              <span class="mosaic__tag">{d.tagline}</span>
+              <span class="mosaic__cta link">Explore
+                <svg class="link__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .dpreview__head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: var(--space-md) var(--space-2xl);
+    margin-bottom: clamp(2rem, 1.2rem + 3vw, 3.5rem);
+  }
+  .dpreview__title { margin-top: var(--space-md); }
+  .dpreview__lead { color: var(--text-muted); max-width: 44ch; }
+
+  .mosaic {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: clamp(0.75rem, 0.4rem + 1.2vw, 1.25rem);
+  }
+  .mosaic__item { position: relative; }
+  .mosaic__item--feature { grid-column: 1 / -1; }
+  .mosaic__item--secondary { grid-column: span 4; }
+
+  .mosaic__link {
+    position: relative;
+    display: block;
+    height: clamp(14rem, 11rem + 10vw, 19rem);
+    overflow: hidden;
+    border-radius: var(--r-md);
+    --logo-accent: var(--camel-300);
+    --accent: var(--camel-300);
+  }
+  .mosaic__item--feature .mosaic__link { height: clamp(20rem, 14rem + 18vw, 30rem); }
+  .mosaic__item--feature .mosaic__name { font-size: clamp(1.9rem, 1.5rem + 2vw, 2.9rem); }
+  .mosaic__link :global(.figure) {
+    position: absolute; inset: 0; aspect-ratio: auto; height: 100%;
+  }
+  .mosaic__link :global(.mosaic__img img) {
+    transition: transform var(--dur-3) var(--ease-out);
+  }
+  .mosaic__link:hover :global(.mosaic__img img) { transform: scale(1.04); }
+
+  .mosaic__veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(11,17,35,0) 38%, rgba(11,17,35,0.82) 100%);
+    transition: background var(--dur-2) var(--ease-out);
+  }
+  .mosaic__link:hover .mosaic__veil {
+    background: linear-gradient(180deg, rgba(11,17,35,0.1) 30%, rgba(11,17,35,0.88) 100%);
+  }
+  .mosaic__body {
+    position: absolute;
+    inset: auto var(--space-lg) var(--space-lg) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--on-dark);
+  }
+  .mosaic__name {
+    font-family: var(--font-display);
+    font-weight: 720;
+    font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.1rem);
+    letter-spacing: var(--track-tight);
+    line-height: 1.05;
+  }
+  .mosaic__tag { color: oklch(0.88 0.015 250); font-size: var(--step-small); }
+  .mosaic__cta {
+    margin-top: 0.7rem;
+    color: var(--camel-300);
+    font-size: 0.9rem;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity var(--dur-2) var(--ease-out), transform var(--dur-2) var(--ease-out);
+  }
+  .mosaic__link:hover .mosaic__cta,
+  .mosaic__link:focus-visible .mosaic__cta { opacity: 1; transform: none; }
+
+  @media (max-width: 52rem) {
+    .dpreview__head { grid-template-columns: 1fr; }
+    .mosaic__item--secondary { grid-column: span 6; }
+  }
+  @media (max-width: 34rem) {
+    .mosaic__item { grid-column: 1 / -1 !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mosaic__cta { opacity: 1; transform: none; }
+    .mosaic__link :global(.mosaic__img img) { transition: none; }
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import Picture from "./Picture.astro";
+import Button from "./Button.astro";
+import type { Img } from "../data/site";
+
+interface Props {
+  variant?: "home" | "page";
+  kicker?: string;
+  title: string;
+  sub?: string;
+  image: Img;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+}
+const { variant = "page", kicker, title, sub, image, primary, secondary } = Astro.props;
+const isHome = variant === "home";
+---
+<section class:list={["hero", `hero--${variant}`]} data-theme="dark">
+  <div class="hero__media">
+    <Picture
+      img={image.img}
+      alt={image.alt}
+      ratio={isHome ? "16 / 10" : "16 / 7"}
+      sizes="100vw"
+      eager={true}
+      fetchpriority="high"
+    />
+    <div class="hero__scrim"></div>
+  </div>
+
+  <div class="hero__inner container container--wide">
+    <div class="hero__content">
+      {kicker && <p class="kicker hero__kicker load-in">{kicker}</p>}
+      <h1 class:list={[isHome ? "display" : "h1", "hero__title", "load-in"]} style="--load-in-delay:80ms">{title}</h1>
+      {sub && <p class="lead hero__sub load-in" style="--load-in-delay:160ms">{sub}</p>}
+      {(primary || secondary) && (
+        <div class="hero__actions load-in" style="--load-in-delay:240ms">
+          {primary && <Button href={primary.href} variant="primary" arrow>{primary.label}</Button>}
+          {secondary && <Button href={secondary.href} variant="ghost" onDark>{secondary.label}</Button>}
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; isolation: isolate; display: flex; align-items: flex-end; }
+  .hero--home { min-height: min(92svh, 60rem); }
+  .hero--page { min-height: min(64svh, 40rem); }
+
+  .hero__media { position: absolute; inset: 0; z-index: -1; }
+  .hero__media :global(.figure) { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
+  .hero__scrim {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15, 23, 45, 0.55) 0%, rgba(15, 23, 45, 0.2) 32%, rgba(11, 17, 35, 0.82) 100%),
+      linear-gradient(90deg, rgba(11, 17, 35, 0.78) 0%, rgba(11, 17, 35, 0.25) 52%, rgba(11, 17, 35, 0) 78%);
+  }
+
+  .hero__inner { width: 100%; padding-block: clamp(6rem, 5rem + 8vw, 9rem) clamp(3rem, 2rem + 5vw, 5.5rem); }
+  .hero__content { max-width: 46rem; }
+  .hero--home .hero__content { max-width: 52rem; }
+  .hero__kicker { color: var(--camel-300); margin-bottom: var(--space-lg); }
+  .hero__title { color: var(--on-dark); }
+  .hero__sub {
+    margin-top: var(--space-lg);
+    color: oklch(0.9 0.012 250);
+    max-width: 44rem;
+    line-height: 1.55;
+  }
+  .hero__actions {
+    margin-top: clamp(1.75rem, 1rem + 2vw, 2.75rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+</style>

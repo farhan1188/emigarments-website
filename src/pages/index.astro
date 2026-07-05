@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import ProofBand from "../components/ProofBand.astro";
+import ValueBlocks from "../components/ValueBlocks.astro";
+import DivisionsPreview from "../components/DivisionsPreview.astro";
+import ProcessSteps from "../components/ProcessSteps.astro";
+import ComplianceStrip from "../components/ComplianceStrip.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { site, images } from "../data/site";
+---
+<Base>
+  <Hero
+    variant="home"
+    kicker={site.tagline}
+    title={site.hero.headline}
+    sub={site.hero.sub}
+    image={images.hero}
+    primary={{ label: "Request a Quote", href: "/contact" }}
+    secondary={{ label: "Explore divisions", href: "/divisions" }}
+  />
+  <ProofBand />
+  <ValueBlocks />
+  <DivisionsPreview />
+  <ProcessSteps theme="alt" />
+  <ComplianceStrip />
+  <CtaBand />
+</Base>
