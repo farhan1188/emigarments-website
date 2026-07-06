@@ -143,7 +143,7 @@ export const divisions: Division[] = [
     gallery: [
       { img: "photo-1741086154510-522e68f76933", alt: "Hand-stitched leather panel showing tight, even saddle stitching", credit: "Olga Kovalski" },
       { img: "photo-1549396555-3d107fd70c85", alt: "A graduated run of leather gloves, consistent hand and colour across every hide", credit: "Philippe Jausions" },
-      { img: "photo-1758252510544-867de633a4cd", alt: "Close grain on a finished hide, ready for cutting", credit: "Sheila C" },
+      { img: "photo-1778882996728-952ed23dc6f4", alt: "Full-grain tanned leather, macro detail of the natural surface", credit: "Igor Karimov" },
     ],
   },
   {
