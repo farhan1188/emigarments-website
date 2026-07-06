@@ -139,7 +139,7 @@ export const divisions: Division[] = [
     blurb:
       "Full-grain and corrected-grain leather and finished leather goods, selected, cut, and constructed to specification. Consistent hand, colour, and durability across every hide, with traceable inputs and tight tolerance on every panel.",
     stages: ["Material selection", "Cutting", "Skiving & prep", "Stitching", "Finishing & QC"],
-    hero: { img: "photo-1623854156816-4c4fc355ffc7", alt: "A finished full-grain leather jacket, cognac tan, hung and inspected off the line", credit: "Derick McKinney" },
+    hero: { img: "photo-1489286696299-aa7486820bd5", alt: "A row of finished leather jackets, quilted and stitched, in graduated tan, grey, and burgundy hides", credit: "Robbie Noble" },
     gallery: [
       { img: "photo-1741086154510-522e68f76933", alt: "Hand-stitched leather panel showing tight, even saddle stitching", credit: "Olga Kovalski" },
       { img: "photo-1549396555-3d107fd70c85", alt: "A graduated run of leather gloves, consistent hand and colour across every hide", credit: "Philippe Jausions" },

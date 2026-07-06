@@ -26,5 +26,8 @@ Thumbs.db
 # impeccable design-hook session cache (local, machine-specific paths)
 .impeccable/
 
+# Claude Code runtime session locks
+.claude/*.lock
+
 .vercel
 .env*
